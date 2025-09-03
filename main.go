@@ -85,7 +85,7 @@ type ReverseParams struct {
 func Reverse(ctx context.Context, req *mcp.CallToolRequest, args ReverseParams) (*mcp.CallToolResult, any, error) {
 
 	startTime, _ := pkg.TransferStringToTime(args.StartTime, pkg.FORMAT2)
-	endTime, _ := pkg.TransferStringToTime(args.StartTime, pkg.FORMAT2)
+	endTime, _ := pkg.TransferStringToTime(args.EndTime, pkg.FORMAT2)
 
 	err := server.r.Reverse(ctx, args.StuID, args.SeatID, startTime, endTime)
 	if err != nil {
