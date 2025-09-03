@@ -90,13 +90,13 @@ func TestReverser_GetSeatsByTime(t *testing.T) {
 	_ = r.StoreStuInfo(context.Background(), stuID, pwd)
 
 	res, err := r.GetSeatsByTime(context.Background(), "2023214414", pkg.Rooms["n1m"],
-		pkg.CreateShanghaiTime(2025, 9, 3, 18, 0),
 		pkg.CreateShanghaiTime(2025, 9, 3, 21, 0),
+		pkg.CreateShanghaiTime(2025, 9, 3, 22, 0),
 		true)
 
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("可用座位数: %d", len(res))
-
+	t.Logf("可用座位数: %+v", res)
+	t.Logf("%v", SeatsToString(res))
 }

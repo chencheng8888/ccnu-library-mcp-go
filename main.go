@@ -5,6 +5,7 @@ import (
 	"ccnu-library-mcp-go/internal/reverser"
 	"ccnu-library-mcp-go/pkg"
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
@@ -38,7 +39,7 @@ type GetSeatsParams struct {
 
 func GetSeats(ctx context.Context, req *mcp.CallToolRequest, args GetSeatsParams) (*mcp.CallToolResult, any, error) {
 	startTime, _ := pkg.TransferStringToTime(args.StartTime, pkg.FORMAT2)
-	endTime, _ := pkg.TransferStringToTime(args.StartTime, pkg.FORMAT2)
+	endTime, _ := pkg.TransferStringToTime(args.EndTime, pkg.FORMAT2)
 
 	seats, err := server.r.GetSeatsByTime(ctx, args.StuID, pkg.Rooms[args.RoomName],
 		startTime, endTime, args.OnlyAvailable)
@@ -49,7 +50,7 @@ func GetSeats(ctx context.Context, req *mcp.CallToolRequest, args GetSeatsParams
 	return &mcp.CallToolResult{
 		Content: []mcp.Content{
 			&mcp.TextContent{
-				Text: reverser.SeatsToString(seats),
+				Text: fmt.Sprintf("%+v", seats),
 			},
 		},
 	}, nil, nil
