@@ -1,6 +1,10 @@
 package reverser
 
 import (
+	"ccnu-library-mcp-go/internal/auther"
+	"ccnu-library-mcp-go/pkg"
+	"context"
+	"os"
 	"reflect"
 	"testing"
 	"time"
@@ -71,4 +75,28 @@ func TestSeat_IsFreeByTime(t *testing.T) {
 			}
 		})
 	}
+}
+
+func LoadInfo() (string, string) {
+	stuID := os.Getenv("STUID")
+	pwd := os.Getenv("PASSWORD")
+	return stuID, pwd
+}
+
+func TestReverser_GetSeatsByTime(t *testing.T) {
+	stuID, pwd := LoadInfo()
+	a := auther.NewAuther()
+	r := NewReverser(a)
+	_ = r.StoreStuInfo(context.Background(), stuID, pwd)
+
+	res, err := r.GetSeatsByTime(context.Background(), "2023214414", pkg.Rooms["n1m"],
+		pkg.CreateShanghaiTime(2025, 9, 3, 18, 0),
+		pkg.CreateShanghaiTime(2025, 9, 3, 21, 0),
+		true)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("可用座位数: %d", len(res))
+
 }

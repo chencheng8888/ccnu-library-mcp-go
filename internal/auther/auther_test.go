@@ -4,16 +4,9 @@ import (
 	"context"
 	"os"
 	"testing"
-
-	"github.com/joho/godotenv"
 )
 
 func LoadInfo() (string, string) {
-	// 加载 .env 文件
-	err := godotenv.Load()
-	if err != nil {
-		return "", ""
-	}
 	stuID := os.Getenv("STUID")
 	pwd := os.Getenv("PASSWORD")
 	return stuID, pwd
