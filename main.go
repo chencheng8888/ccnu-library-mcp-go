@@ -29,7 +29,7 @@ func main() {
 	// Create a server with a single tool.
 	server := mcp.NewServer(&mcp.Implementation{Name: "ccnu-library-mcp", Version: "v1.0.0"}, nil)
 
-	mcp.AddTool(server, &mcp.Tool{Name: "register", Description: "注册学生信息，只有这样才能进行其他操作"}, h.Register)
+	mcp.AddTool(server, &mcp.Tool{Name: "register", Description: "注册学生信息"}, h.Register)
 	mcp.AddTool(server, &mcp.Tool{Name: "get seat info", Description: "获取华中师范大学的图书馆的座位占用情况"}, h.GetSeats)
 	mcp.AddTool(server, &mcp.Tool{Name: "reverse seat", Description: "预约座位"}, h.Reverse)
 

@@ -4,7 +4,11 @@
 
 ## 项目简介
 
-这是一个基于 Go 语言开发的 MCP 服务器，提供华中师范大学图书馆座位预约相关的工具功能。通过 MCP 协议，可以与各种 AI 助手集成，实现图书馆座位的查询和预约功能。
+这是一个基于 Go 语言开发的 MCP 服务器，提供华中师范大学图书馆座位预约相关的工具功能。通过 MCP 协议，可以与各种 AI 助手（如 Claude Desktop、VSCode 等）集成，实现图书馆座位的查询和预约功能。
+
+该项目支持两种运行模式：
+- **stdio 模式**: 通过标准输入输出与客户端通信，适用于本地集成
+- **SSE 模式**: 通过 HTTP 服务器提供 Server-Sent Events 接口，适用于远程调用
 
 ## 功能特性
 
@@ -13,10 +17,11 @@
 - **座位预约**: 预约指定座位和时间段
 - **支持区域**: 南湖分馆一楼开敞座位区、一楼中庭开敞座位区、二楼开敞座位区
 
-## 安装要求
+## 系统要求
 
 - Go 1.24.4 或更高版本
 - 华中师范大学有效学号和密码
+- 支持的操作系统: Windows, Linux, macOS
 
 ## 安装和运行
 
@@ -33,14 +38,42 @@ cd ccnu-library-mcp-go
 go mod download
 ```
 
-### 3. 构建项目(根据你的系统,以windows为例)
+### 3. 构建项目
 
+#### Windows
 ```bash
 go build -o ccnu-library-mcp-go.exe
 ```
 
-### 4. 在mcp client中配置
+#### Linux/macOS
+```bash
+go build -o ccnu-library-mcp-go
+```
 
+### 4. 运行服务器
+
+#### Stdio 模式（默认,可不加type）
+```bash
+# Windows
+./ccnu-library-mcp-go.exe -type stdio
+
+# Linux/macOS  
+./ccnu-library-mcp-go -type stdio
+```
+
+#### SSE 模式（用于 HTTP 接口,端口默认8080）
+```bash
+# 默认端口 8080
+./ccnu-library-mcp-go -type sse
+
+# 自定义端口
+./ccnu-library-mcp-go -type sse -port 3000
+```
+
+### 5. MCP 客户端配置
+
+
+**studio模式**
 ```json
 {
   "mcpServers": {
@@ -48,19 +81,30 @@ go build -o ccnu-library-mcp-go.exe
       "disabled": false,
       "timeout": 60,
       "type": "stdio",
-      "command": "xxx\\ccnu-library-mcp-go\\ccnu-library-mcp-go.exe",
-      "args": []
+      "command": "C:\\path\\to\\ccnu-library-mcp-go\\ccnu-library-mcp-go.exe",
+      "args": ["-type", "stdio"]
     }
   }
 }
+```
 
+**sse模式**
+```json
+{
+  "mcpServers": {
+    "ccnu-library-mcp-remote": {
+      "url": "http://addr:port",
+      "disabled": false
+    }
+  }
+}
 ```
 
 ## MCP 工具说明
 
 ### 1. 注册工具 (register)
 
-注册学生信息，必须先注册才能使用其他功能。
+注册学生信息
 
 **参数:**
 - `stu_id`: 学号 (必填)
@@ -119,52 +163,69 @@ go build -o ccnu-library-mcp-go.exe
 }
 ```
 
+## 命令行参数
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `-type` | `stdio` | 服务器类型，可选值: `stdio`, `sse` |
+| `-port` | `8080` | SSE 模式下的 HTTP 服务器端口 |
+
+**示例:**
+```bash
+# 使用 stdio 模式（默认）
+./ccnu-library-mcp-go
+
+# 使用 SSE 模式，端口 3000
+./ccnu-library-mcp-go -type sse -port 3000
+```
+
 ## 项目结构
 
 ```
 ccnu-library-mcp-go/
 ├── internal/
 │   ├── auther/          # 认证模块
-│   │   ├── auther.go    # 认证实现
+│   │   ├── auther.go    # 学生信息存储和认证
 │   │   └── auther_test.go
 │   └── reverser/        # 预约模块
-│       ├── reverser.go  # 预约实现
+│       ├── reverser.go  # 座位查询和预约核心逻辑
 │       └── reverser_test.go
 ├── pkg/
-│   └── tool.go          # 工具函数和常量
-├── main.go              # 主程序入口
+│   └── tool.go          # 工具函数、时间处理、房间映射
+├── main.go              # 主程序入口，MCP 服务器初始化
+├── handler.go           # MCP 工具处理器实现
+├── server.go            # 服务器接口，支持 stdio 和 SSE 模式
 ├── go.mod              # Go 模块定义
 ├── go.sum              # 依赖校验和
 ├── LICENSE             # Apache 2.0 许可证
 └── README.md           # 项目说明文档
 ```
 
-## 技术栈
-
-- **语言**: Go 1.24.4
-- **MCP SDK**: github.com/modelcontextprotocol/go-sdk v0.3.1
-- **HTTP 客户端**: 标准库 net/http
-- **HTML 解析**: github.com/PuerkitoBio/goquery v1.10.3
 
 ## 开发说明
 
-### 构建测试
-
+### 运行测试
 ```bash
+# 运行所有测试
 go test ./...
+
+# 运行指定模块测试
+go test ./internal/auther
+go test ./internal/reverser
 ```
 
-### 代码格式化
-
+### 代码质量
 ```bash
+# 代码格式化
 go fmt ./...
-```
 
-### 依赖检查
+# 代码检查
+go vet ./...
 
-```bash
+# 依赖整理
 go mod tidy
 ```
+
 
 ## 许可证
 
@@ -176,11 +237,12 @@ go mod tidy
 
 ## 注意事项
 
-1. 使用前请确保拥有华中师范大学的有效学号和密码
-2. 时间参数中的分钟必须是5的倍数（如 10:00, 10:05, 10:10 等）
-3. 请遵守图书馆的使用规定，合理使用预约功能
-4. 本项目仅用于学习和研究目的
-
-## 联系方式
-
-如有问题或建议，请通过 GitHub Issues 提交反馈。
+1. **认证要求**: 使用前请确保拥有华中师范大学的有效学号和密码
+2. **时间格式**: 时间参数中的分钟必须是5的倍数（如 10:00, 10:05, 10:10 等）
+3. **房间代码**: 
+   - `n1`: 南湖分馆一楼开敞座位区 (ID: 101699179)
+   - `n1m`: 南湖分馆一楼中庭开敞座位区 (ID: 101699187)  
+   - `n2`: 南湖分馆二楼开敞座位区 (ID: 101699189)
+4. **使用规范**: 请遵守图书馆的使用规定，合理使用预约功能
+5. **时区设置**: 所有时间均使用上海时区 (Asia/Shanghai)
+6. **用途声明**: 本项目仅用于学习和研究目的
