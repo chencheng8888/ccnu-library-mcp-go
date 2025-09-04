@@ -4,7 +4,6 @@ go 1.24.4
 
 require (
 	github.com/PuerkitoBio/goquery v1.10.3
-	github.com/joho/godotenv v1.5.1
 	github.com/modelcontextprotocol/go-sdk v0.3.1
 )
 
