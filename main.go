@@ -21,6 +21,7 @@ func init() {
 }
 
 func main() {
+	flag.Parse()
 	a := auther.NewAuther()
 	r := reverser.NewReverser(a)
 	h := NewCCNULibHandler(r)
