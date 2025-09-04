@@ -117,7 +117,7 @@ func (a *Auther) getNecessaryInfo(ctx context.Context) (*http.Client, map[string
 	client := &http.Client{
 		Jar: jar,
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-			fmt.Println("Redirected to:", req.URL)
+			// fmt.Println("Redirected to:", req.URL)
 			return nil // 允许重定向，模拟浏览器自动跳转
 		},
 		Transport: tr,
@@ -175,7 +175,7 @@ func (a *Auther) getNecessaryInfo(ctx context.Context) (*http.Client, map[string
 				getCookieKey2 = true
 				infos[cookie.Name] = cookie.Value
 			}
-			fmt.Println("Cookie:", cookie.Name, "Value:", cookie.Value, "Domain:", cookie.Domain)
+			// fmt.Println("Cookie:", cookie.Name, "Value:", cookie.Value, "Domain:", cookie.Domain)
 		}
 	}
 
@@ -183,7 +183,7 @@ func (a *Auther) getNecessaryInfo(ctx context.Context) (*http.Client, map[string
 		return nil, nil, fmt.Errorf("failed to get cookies, expected 2 cookies")
 	}
 
-	fmt.Printf("necessary info: %+v\n", infos)
+	// fmt.Printf("necessary info: %+v\n", infos)
 
 	return client, infos, nil
 }
