@@ -1,10 +1,9 @@
 package main
 
 import (
-	"ccnu-library-mcp-go/internal/auther"
-	"ccnu-library-mcp-go/internal/reverser"
 	"context"
 	"flag"
+	libraryreservations "github.com/chencheng8888/ccnu-library-reservations"
 	"log"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
@@ -22,9 +21,8 @@ func init() {
 
 func main() {
 	flag.Parse()
-	a := auther.NewAuther()
-	r := reverser.NewReverser(a)
-	h := NewCCNULibHandler(r)
+	a := libraryreservations.NewAuther()
+	h := NewCCNULibHandler(a)
 
 	// Create a server with a single tool.
 	server := mcp.NewServer(&mcp.Implementation{Name: "ccnu-library-mcp", Version: "v1.0.0"}, nil)

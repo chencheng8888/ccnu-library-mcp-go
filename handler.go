@@ -1,22 +1,24 @@
 package main
 
 import (
-	"ccnu-library-mcp-go/internal/reverser"
 	"ccnu-library-mcp-go/pkg"
 	"context"
 	"fmt"
+	libraryreservations "github.com/chencheng8888/ccnu-library-reservations"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
-
 type CCNULibHandler struct {
-	r *reverser.Reverser
+	au libraryreservations.Auther
+	r  libraryreservations.Reverser
 }
 
-
-func NewCCNULibHandler(r *reverser.Reverser) *CCNULibHandler {
-	return &CCNULibHandler{r: r}
+func NewCCNULibHandler(au libraryreservations.Auther) *CCNULibHandler {
+	return &CCNULibHandler{
+		au: au,
+		r:  libraryreservations.NewReverser(au),
+	}
 }
 
 type RegisterParams struct {
@@ -24,9 +26,8 @@ type RegisterParams struct {
 	Pwd   string `json:"pwd" jsonschema:"密码"`
 }
 
-
 func (h *CCNULibHandler) Register(ctx context.Context, req *mcp.CallToolRequest, args RegisterParams) (*mcp.CallToolResult, any, error) {
-	err := h.r.StoreStuInfo(ctx, args.StuID, args.Pwd)
+	err := h.au.StoreStuInfo(ctx, args.StuID, args.Pwd)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -38,7 +39,6 @@ func (h *CCNULibHandler) Register(ctx context.Context, req *mcp.CallToolRequest,
 		},
 	}, nil, nil
 }
-
 
 type GetSeatsParams struct {
 	StuID         string `json:"stu_id" jsonschema:"学号"`
@@ -66,8 +66,6 @@ func (h *CCNULibHandler) GetSeats(ctx context.Context, req *mcp.CallToolRequest,
 		},
 	}, nil, nil
 }
-
-
 
 type ReverseParams struct {
 	StuID     string `json:"stu_id" jsonschema:"学号"`
