@@ -15,7 +15,7 @@ var port int
 
 func init() {
 	// 注册命令行参数
-	flag.StringVar(&mcpServerType, "type", "stdio", "MCP server type: stdio or sse")
+	flag.StringVar(&mcpServerType, "type", "stdio", "MCP server type: stdio or remote")
 	flag.IntVar(&port, "port", 8080, "Port for SSE server")
 }
 
@@ -36,7 +36,7 @@ func main() {
 	switch mcpServerType {
 	case "stdio":
 		mcpServer = NewLocalMcpServer(server)
-	case "sse":
+	case "remote":
 		mcpServer = NewRemoteMcpServer(server, port)
 	default:
 		log.Fatalf("unknown mcp server type: %s", mcpServerType)
