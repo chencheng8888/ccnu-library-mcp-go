@@ -1,10 +1,10 @@
 package main
 
 import (
-	"ccnu-library-mcp-go/pkg"
 	"context"
 	"fmt"
 	libraryreservations "github.com/chencheng8888/ccnu-library-reservations"
+	"github.com/chencheng8888/ccnu-library-reservations/pkg"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
@@ -52,7 +52,7 @@ func (h *CCNULibHandler) GetSeats(ctx context.Context, req *mcp.CallToolRequest,
 	startTime, _ := pkg.TransferStringToTime(args.StartTime, pkg.FORMAT2)
 	endTime, _ := pkg.TransferStringToTime(args.EndTime, pkg.FORMAT2)
 
-	seats, err := h.r.GetSeatsByTime(ctx, args.StuID, pkg.Rooms[args.RoomName],
+	seats, err := h.r.GetSeatsByTime(ctx, args.StuID, libraryreservations.Rooms[args.RoomName],
 		startTime, endTime, args.OnlyAvailable)
 	if err != nil || seats == nil {
 		return nil, nil, err
