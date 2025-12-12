@@ -61,13 +61,13 @@ go build -o ccnu-library-mcp-go
 ./ccnu-library-mcp-go -type stdio
 ```
 
-#### SSE 模式（用于 HTTP 接口,端口默认8080）
+#### Remote 模式（用于 HTTP 接口,端口默认8080）
 ```bash
 # 默认端口 8080
-./ccnu-library-mcp-go -type sse
+./ccnu-library-mcp-go -type remote
 
 # 自定义端口
-./ccnu-library-mcp-go -type sse -port 3000
+./ccnu-library-mcp-go -type remote -port 3000
 ```
 
 ### 5. MCP 客户端配置
@@ -88,12 +88,12 @@ go build -o ccnu-library-mcp-go
 }
 ```
 
-**sse模式**
+**Remote模式**
 ```json
 {
   "mcpServers": {
     "ccnu-library-mcp-remote": {
-      "url": "http://addr:port",
+      "url": "http://addr:port/mcp",
       "disabled": false
     }
   }
@@ -165,65 +165,18 @@ go build -o ccnu-library-mcp-go
 
 ## 命令行参数
 
-| 参数 | 默认值 | 说明 |
-|------|--------|------|
-| `-type` | `stdio` | 服务器类型，可选值: `stdio`, `sse` |
-| `-port` | `8080` | SSE 模式下的 HTTP 服务器端口 |
+| 参数 | 默认值 | 说明                           |
+|------|--------|------------------------------|
+| `-type` | `stdio` | 服务器类型，可选值: `stdio`, `remote` |
+| `-port` | `8080` | SSE 模式下的 HTTP 服务器端口          |
 
 **示例:**
 ```bash
 # 使用 stdio 模式（默认）
 ./ccnu-library-mcp-go
 
-# 使用 SSE 模式，端口 3000
+# 使用 remote 模式，端口 3000
 ./ccnu-library-mcp-go -type sse -port 3000
-```
-
-## 项目结构
-
-```
-ccnu-library-mcp-go/
-├── internal/
-│   ├── auther/          # 认证模块
-│   │   ├── auther.go    # 学生信息存储和认证
-│   │   └── auther_test.go
-│   └── reverser/        # 预约模块
-│       ├── reverser.go  # 座位查询和预约核心逻辑
-│       └── reverser_test.go
-├── pkg/
-│   └── tool.go          # 工具函数、时间处理、房间映射
-├── main.go              # 主程序入口，MCP 服务器初始化
-├── handler.go           # MCP 工具处理器实现
-├── server.go            # 服务器接口，支持 stdio 和 SSE 模式
-├── go.mod              # Go 模块定义
-├── go.sum              # 依赖校验和
-├── LICENSE             # Apache 2.0 许可证
-└── README.md           # 项目说明文档
-```
-
-
-## 开发说明
-
-### 运行测试
-```bash
-# 运行所有测试
-go test ./...
-
-# 运行指定模块测试
-go test ./internal/auther
-go test ./internal/reverser
-```
-
-### 代码质量
-```bash
-# 代码格式化
-go fmt ./...
-
-# 代码检查
-go vet ./...
-
-# 依赖整理
-go mod tidy
 ```
 
 
