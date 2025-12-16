@@ -8,7 +8,7 @@
 
 该项目支持两种运行模式：
 - **stdio 模式**: 通过标准输入输出与客户端通信，适用于本地集成
-- **SSE 模式**: 通过 HTTP 服务器提供 Server-Sent Events 接口，适用于远程调用
+- **remote 模式**: 通过 HTTP 服务器提供接口，适用于远程调用
 
 ## 功能特性
 
@@ -168,7 +168,8 @@ go build -o ccnu-library-mcp-go
 | 参数 | 默认值 | 说明                           |
 |------|--------|------------------------------|
 | `-type` | `stdio` | 服务器类型，可选值: `stdio`, `remote` |
-| `-port` | `8080` | SSE 模式下的 HTTP 服务器端口          |
+| `-port` | `8080` | remote 模式下的 HTTP 服务器端口          |
+|`-conf` | "" |学生配置文件路径，该文件应为 JSON 文件，格式如下：{\"stu_id1\":\"pwd1\",\"stu_id2\":\"pwd2\"}| 
 
 **示例:**
 ```bash
@@ -176,7 +177,7 @@ go build -o ccnu-library-mcp-go
 ./ccnu-library-mcp-go
 
 # 使用 remote 模式，端口 3000
-./ccnu-library-mcp-go -type sse -port 3000
+./ccnu-library-mcp-go -type remote -port 3000
 ```
 
 
