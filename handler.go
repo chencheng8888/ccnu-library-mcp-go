@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
+
 	libraryreservations "github.com/chencheng8888/ccnu-library-reservations"
 	"github.com/chencheng8888/ccnu-library-reservations/pkg"
-
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
@@ -54,8 +54,8 @@ func (h *CCNULibHandler) GetSeats(ctx context.Context, req *mcp.CallToolRequest,
 
 	seats, err := h.r.GetSeatsByTime(ctx, args.StuID, libraryreservations.Rooms[args.RoomName],
 		startTime, endTime, args.OnlyAvailable)
-	if err != nil || seats == nil {
-		return nil, nil, err
+	if err != nil || len(seats) == 0 {
+		return nil, nil, fmt.Errorf("获取座位信息失败: %w,请检查是否已经注册学生信息", err)
 	}
 
 	return &mcp.CallToolResult{
